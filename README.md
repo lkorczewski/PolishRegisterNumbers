@@ -1,5 +1,5 @@
 PolishRegisterNumbers
 ====================
 
-A PHP support for PESEL number. Support for REGON and NIP numbers is planned
+A PHP support for PESEL and NIP numbers. Support for REGON and is planned
 for future releases.

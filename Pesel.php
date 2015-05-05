@@ -2,24 +2,16 @@
 
 namespace PolishRegisterNumbers;
 
-class Pesel {
+class Pesel extends RegisterNumberAbstract {
 	
-	protected $pesel;
-	protected $isValid;
-	protected $validity;
-	
-	const VALIDITY_VALID                          = 0;
-	const VALIDITY_INVALID_NUMERICNESS_AND_LENGTH = 1;
-	const VALIDITY_INVALID_BIRTH_DATE             = 2;
-	const VALIDITY_INVALID_CONTROL_DIGIT          = 3;
+	const VALIDITY_INVALID_BIRTH_DATE = 10;
 	
 	const SEX_UNDEFINED = -1;
 	const SEX_MALE      = 0;
 	const SEX_FEMALE    = 1;
 	
-	function __construct($pesel){
-		$this->pesel = (string)$pesel;
-	}
+	protected $length = 11; 
+	protected $controlDigitMultipliers = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
 	
 	function isValid(){
 		
@@ -27,24 +19,16 @@ class Pesel {
 			return $this->isValid;
 		}
 		
-		$isValid = $this->validateNumericnessAndLength()
+		$isValid = $this->validateLength()
+			&& $this->validateNumericness()
 			&& $this->validateDate()
-			&& $this->validateControlNumber();
+			&& $this->validateControlNumber()
+		;
 		
 		$this->isValid = $isValid;
 		
 		if($isValid){
 			$this->validity = self::VALIDITY_VALID;
-		}
-		
-		return $isValid;
-	}
-	
-	protected function validateNumericnessAndLength(){
-		$isValid = preg_match('/^[0-9]{11}$/', $this->pesel);
-		
-		if(!$isValid){
-			$this->validity = self::VALIDITY_INVALID_NUMERICNESS_AND_LENGTH;
 		}
 		
 		return $isValid;
@@ -59,11 +43,11 @@ class Pesel {
 			4 => 18,
 		];
 		
-		$year            = (integer)substr($this->pesel, 0, 2);
-		$centuryAndMonth = (integer)substr($this->pesel, 2, 2);
+		$year            = (integer)substr($this->number, 0, 2);
+		$centuryAndMonth = (integer)substr($this->number, 2, 2);
 		$month           = $centuryAndMonth % 20;
 		$century         = $centuryMap[(integer)($centuryAndMonth / 20)];
-		$day             = (integer)substr($this->pesel, 4, 2);
+		$day             = (integer)substr($this->number, 4, 2);
 		
 		if(checkdate($month, $day, $century * 100 + $year)){
 			return true;
@@ -73,47 +57,11 @@ class Pesel {
 		return false;
 	}
 	
-	protected function validateControlNumber(){
-		$digits = str_split($this->pesel);
-		$multipliers = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
-		$sum = $this->sumMultipliedValues($digits, $multipliers);
-		$lastSumDigit = $sum % 10;
-		$controlDigit = $lastSumDigit == 0 ? 0 : 10 - $lastSumDigit;
-		
-		if($controlDigit == $digits[10]){
-			return true;
-		}
-		
-		$this->validity = self::VALIDITY_INVALID_CONTROL_DIGIT;
-		return false;
-	}
-	
-	protected function sumMultipliedValues(
-		array $values,
-		array $multipliers
-	){
-		$multiply = function($value, $multiplier){
-			return $multiplier * $value;
-		};
-		$multipliedValues = array_map($multiply, $values, $multipliers);
-		$sum = array_sum($multipliedValues);
-		
-		return $sum;
-	}
-	
-	function getValidity(){
-		if(null === $this->validity){
-			$this->isValid();
-		}
-		
-		return $this->validity;
-	}
-	
 	function getSex(){
 		
-		if(isset($this->pesel{9})){
+		if(isset($this->number{9})){
 		
-			$sexDigit = $this->pesel{9};
+			$sexDigit = $this->number{9};
 			
 			if(in_array($sexDigit, ['1', '3', '5', '7', '9'], true)){
 				return self::SEX_MALE;
@@ -125,10 +73,6 @@ class Pesel {
 		}
 		
 		return self::SEX_UNDEFINED;
-	}
-	
-	function toString(){
-		return $this->pesel;
 	}
 	
 }
