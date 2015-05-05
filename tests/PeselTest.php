@@ -36,12 +36,12 @@ class PeselTest extends PHPUnit_Framework_TestCase {
 	
 	function testInvalidDateLeapYears(){
 
-		$pesel = new Pesel('80022900000'); // 1900-02-29
+		$pesel = new Pesel('80022900000'); // 1980-02-29
 		
 		$this->assertEquals($pesel->isValid(), false);
 		$this->assertNotEquals($pesel->getValidity(), Pesel::VALIDITY_INVALID_BIRTH_DATE);
 		
-		$pesel = new Pesel('81022900000'); // 1900-02-29
+		$pesel = new Pesel('81022900000'); // 1981-02-29
 		
 		$this->assertEquals($pesel->isValid(), false);
 		$this->assertEquals($pesel->getValidity(), Pesel::VALIDITY_INVALID_BIRTH_DATE);
@@ -69,7 +69,7 @@ class PeselTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($pesel->isValid(), false);
 		$this->assertEquals($pesel->getValidity(), Pesel::VALIDITY_INVALID_BIRTH_DATE);
 		
-		$pesel = new Pesel('00822900000'); // 2300-02-29
+		$pesel = new Pesel('00822900000'); // 1800-02-29
 		
 		$this->assertEquals($pesel->isValid(), false);
 		$this->assertEquals($pesel->getValidity(), Pesel::VALIDITY_INVALID_BIRTH_DATE);
