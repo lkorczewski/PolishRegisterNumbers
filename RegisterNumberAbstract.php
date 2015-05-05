@@ -70,10 +70,9 @@ abstract class RegisterNumberAbstract {
 	
 	protected function validateControlNumber(){
 		$sum = $this->sumMultipliedDigits();
-		$lastSumDigit = $sum % 10;
-		$controlDigit = $lastSumDigit == 0 ? 0 : 10 - $lastSumDigit;
+		$controlDigit = $sum % 11;
 		
-		if($controlDigit == substr($this->number, $this->length - 1, 1)){
+		if($controlDigit == $this->number{$this->length - 1}){
 			return true;
 		}
 		

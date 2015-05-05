@@ -34,7 +34,22 @@ class Pesel extends RegisterNumberAbstract {
 		return $isValid;
 	}
 	
+	protected function validateControlNumber(){
+		
+		$sum = $this->sumMultipliedDigits();
+		$lastSumDigit = $sum % 10;
+		$controlDigit = $lastSumDigit == 0 ? 0 : 10 - $lastSumDigit;
+		
+		if($controlDigit == substr($this->number, $this->length - 1, 1)){
+			return true;
+		}
+		
+		$this->validity = self::VALIDITY_INVALID_CONTROL_DIGIT;
+		return false;
+	}
+	
 	protected function validateDate(){
+		
 		$centuryMap = [
 			0 => 19,
 			1 => 20,
