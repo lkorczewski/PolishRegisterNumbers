@@ -52,18 +52,18 @@ class Pesel {
 	
 	protected function validateDate(){
 		$centuryMap = [
-			0 => '19',
-			1 => '20',
-			2 => '21',
-			3 => '22',
-			4 => '18',
+			0 => 19,
+			1 => 20,
+			2 => 21,
+			3 => 22,
+			4 => 18,
 		];
 		
-		$year            = substr($this->pesel, 0, 2);
-		$centuryAndMonth = substr($this->pesel, 2, 2);
+		$year            = (integer)substr($this->pesel, 0, 2);
+		$centuryAndMonth = (integer)substr($this->pesel, 2, 2);
 		$month           = $centuryAndMonth % 20;
 		$century         = $centuryMap[(integer)($centuryAndMonth / 20)];
-		$day             = substr($this->pesel, 4, 2);
+		$day             = (integer)substr($this->pesel, 4, 2);
 		
 		if(checkdate($month, $day, $century * 100 + $year)){
 			return true;
@@ -132,4 +132,3 @@ class Pesel {
 	}
 	
 }
-
